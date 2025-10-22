@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Colesterol - Instituto Nacional del Tórax</title>
+        
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.1);
+            border: 3px dashed rgba(255,255,255,0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-container:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .logo-placeholder {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+
+        .logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 5px;
+        }
+
+        .tabs-container {
+            background: #f8f9fa;
+            padding: 0;
+        }
+
+        .tabs-nav {
+            display: flex;
+            background: #e9ecef;
+            border-bottom: 3px solid #dee2e6;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button:hover {
+            background: rgba(0,123,255,0.1);
+            color: #007bff;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #007bff;
+            border-bottom-color: #007bff;
+        }
+
+        .tab-content {
+            padding: 40px;
+            min-height: 400px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .intro-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #495057;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            border-radius: 5px;
+        }
+
+        .penguin-message {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(40,167,69,0.3);
+            position: relative;
+        }
+
+        .penguin-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .penguin {
+            font-size: 60px;
+            animation: bounce 2s infinite;
+        }
+
+        .speech-bubble {
+            background: white;
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 20px;
+            position: relative;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 15px solid transparent;
+            border-right-color: white;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .calculate-button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(238,90,36,0.4);
+        }
+
+        .calculate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(238,90,36,0.6);
+        }
+
+        .arrow {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .calculate-button:hover .arrow {
+            transform: translateX(5px);
+        }
+
+        /* Estilos para la sección de cálculo */
+        .calculation-section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .calculation-section.active {
+            display: block;
+        }
+
+        .formula-selector {
+            margin-bottom: 30px;
+        }
+
+        .formula-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .formula-btn {
+            padding: 12px 25px;
+            border: 2px solid #007bff;
+            background: white;
+            color: #007bff;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .formula-btn:hover,
+        .formula-btn.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .formula-info {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .formula-info.active {
+            display: block;
+        }
+
+        .formula-display {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .formula-equation {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1976d2;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .variables-info, .limit-detection {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .variables-info h4, .limit-detection h4 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .variables-info ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .variables-info li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .variables-info li:before {
+            content: "•";
+            color: #007bff;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .limit-detection {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+
+        .calculator-form {
+            margin-top: 30px;
+        }
+
+        .formula-calculator {
+            display: none;
+        }
+
+        .formula-calculator.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .calculate-final {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .calculate-final:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .result-warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warning-icon {
+            font-size: 24px;
+            color: #ffc107;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .tabs-nav {
+                flex-direction: column;
+            }
+
+            .formula-buttons {
+                flex-direction: column;
+            }
+
+            .penguin-container {
+                flex-direction: column;
+            }
+
+            .speech-bubble::after {
+                left: 50%;
+                top: -15px;
+                transform: translateX(-50%);
+                border-left-color: transparent;
+                border-right-color: transparent;
+                border-bottom-color: white;
+                border-top: none;
+            }
+        }
+    
+        .footer {
+            background: #f1f3f5;
+            padding: 15px 20px;
+            text-align: center;
+            color: #495057;
+            border-top: 1px solid #e9ecef;
+        }
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer small {
+            display: block;
+            margin-top: 6px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+     
+    <div class="container">
+        <header class="header">
+            <h1>INSTITUTO NACIONAL DEL TÓRAX</h1>
+            <h3>LABORATORIO CLÍNICO-QUÍMICA SANGUINEA</h3>
+            <div class="logo-container">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4cvhNqRNiACS3dRRfhxZsVx2KcH69D7d4Bg&s" alt="Logo Instituto Nacional del Tórax">
+            </div>
+            <input type="file" id="logoInput" accept="image/*" style="display: none;">
+        </header>
+
+        <div class="tabs-container">
+            <nav class="tabs-nav">
+                <button class="tab-button active" onclick="showMainTab('ldl')">LDL</button>
+                <button class="tab-button" onclick="showMainTab('vldl')">VLDL</button>
+                <button class="tab-button" onclick="showMainTab('remanente')">COLESTEROL REMANENTE</button>
+            </nav>
+
+            <!-- Pestaña LDL Principal -->
+            <div class="tab-content active" id="ldl-main-tab">
+                <div class="intro-text">
+                    <strong>LDL (Low Density Lipoprotein)</strong><br><br>
+                    El colesterol LDL es fundamental en la evaluación cardiovascular ya que transporta el colesterol desde el hígado hacia los tejidos periféricos. Cuando sus niveles están elevados, tiende a acumularse en las paredes arteriales formando placas ateroscleróticas que pueden obstruir el flujo sanguíneo. Su medición precisa es esencial para estratificar el riesgo cardiovascular y guiar las decisiones terapéuticas, especialmente en pacientes con factores de riesgo múltiples.
+                    El cLDL es un factor de riesgo clave en el desarrollo de la enfermedad cardiovascular aterosclerótica y el principal objetivo terapéutico de las terapias hipolipemiantes disponibles actualmente. La relevancia de este factor de riesgo en la 'dislipidemia es alta, por lo que las sociedades científicas han desarrollado guías de práctica clínica que incluyen como objetivo la determinación correcta y precisa de los niveles de cLDL en pacientes con dislipidemia. En este sentido, las decisiones terapéuticas deben variar según si los niveles de cLDL se intensifican o disminuyen.
+                 <img src="https://lh3.googleusercontent.com/proxy/EK2zSx1eLZ5taCgkbmkCbZD5oEqZOaNDxa9nj4NPpOuGjkTt0abnK4scp1zRukknJYbSzPfXcX7W0cJOL3ZlRyHlEws8n2WUKFYbnbuv5ORAJO-rb1jRp4r1HvY_2bHVM6drN6Oz" alt="Fisiopatologia de la placa aterogenica">
+                </div>
+                
+                <div class="penguin-message">
+                    <div class="penguin-container">
+                        <div class="penguin">🐧</div>
+                        <div class="speech-bubble">¡Estamos Listos!</div>
+                    </div>
+                    <button class="calculate-button" onclick="showCalculation('ldl')">
+                        CALCULAR LDL <span class="arrow">→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pestaña VLDL Principal -->
+            <div class="tab-content" id="vldl-main-tab">
+                <div class="intro-text">
+                    <strong>VLDL (Very Low Density Lipoprotein)</strong><br><br>
+                    Las lipoproteínas VLDL son partículas ricas en triglicéridos que se sintetizan en el hígado y representan un componente importante del perfil lipídico. Aunque tradicionalmente se consideraban menos relevantes que el LDL, estudios recientes demuestran su papel independiente en la aterogénesis. Su elevación se asocia estrechamente con el síndrome metabólico, resistencia a la insulina y aumento del riesgo cardiovascular, especialmente en pacientes diabéticos.
+                    Contiene apolipoproteínas importantes (apoB100, apoC-II, apoE) que regulan su metabolismo:
+
+ApoC-II activa la lipoprotein lipasa (LPL), enzima que hidroliza los triglicéridos para que los tejidos los capten como ácidos grasos.
+
+Después de perder triglicéridos, la VLDL se transforma progresivamente en IDL y luego en LDL, lipoproteína rica en colesterol.
+                    <img src="https://www.researchgate.net/publication/368255032/figure/fig1/AS:11431281130484074@1679853983170/Role-of-hepatic-VLDL-receptor-expression-in-the-clearance-of-atherogenic-particles.png">
+                
+                </div>
+                
+                <div class="penguin-message">
+                    <div class="penguin-container">
+                        <div class="penguin">🐧</div>
+                        <div class="speech-bubble">¡Estamos Listos!</div>
+                    </div>
+                    <button class="calculate-button" onclick="showCalculation('vldl')">
+                        CALCULAR VLDL <span class="arrow">→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pestaña Colesterol Remanente Principal -->
+            <div class="tab-content" id="remanente-main-tab">
+                <div class="intro-text">
+                    <strong>Colesterol Remanente</strong><br><br>
+                    El colesterol remanente incluye todas las lipoproteínas aterogénicas no-HDL y no-LDL, principalmente los remanentes de quilomicrones y VLDL. Investigaciones recientes han establecido su importancia como factor de riesgo cardiovascular independiente, especialmente relevante en pacientes con triglicéridos elevados. Su medición proporciona información adicional sobre el riesgo residual que no se captura completamente con los parámetros tradicionales del perfil lipídico.
+                </div>
+                
+                <div class="penguin-message">
+                    <div class="penguin-container">
+                        <div class="penguin">🐧</div>
+                        <div class="speech-bubble">¡Estamos Listos!</div>
+                    </div>
+                    <button class="calculate-button" onclick="showCalculation('remanente')">
+                        CALCULAR COLESTEROL REMANENTE <span class="arrow">→</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Cálculo LDL -->
+        <div class="calculation-section" id="ldl-calculation">
+            <h2>Calculadora de LDL</h2>
+            
+            <div class="formula-selector">
+                <div class="formula-buttons">
+                    <button class="formula-btn active" onclick="selectLDLFormula('friedewald')">Fórmula de Friedewald</button>
+                    <button class="formula-btn" onclick="selectLDLFormula('sampson')">Fórmula de Sampson</button>
+                </div>
+            </div>
+
+            <div id="ldl-friedewald-info" class="formula-info active">
+                <div class="formula-display">
+                    <h3>Fórmula de Friedewald:</h3>
+                    <div class="formula-equation">C<sub>LDL-C</sub> = C<sub>TC</sub> - C<sub>HDL-C</sub> - C<sub>TG</sub>/5</div>
+                </div>
+                <div class="variables-info">
+                    <h4>Significado de las variables:</h4>
+                    <ul>
+                        <li><strong>C<sub>LDL-C</sub></strong>: Concentración de colesterol LDL (mg/dL)</li>
+                        <li><strong>C<sub>TC</sub></strong>: Colesterol Total (mg/dL)</li>
+                        <li><strong>C<sub>HDL-C</sub></strong>: Colesterol HDL (mg/dL)</li>
+                        <li><strong>C<sub>TG</sub></strong>: Triglicéridos (mg/dL)</li>
+                        <li><strong>Constante 5</strong>: Relación entre triglicéridos y colesterol esterificado en el VLDL</li>
+                    </ul>
+                </div>
+                <div class="limit-detection">
+                    <h4>LÍMITE DE DETECCIÓN:</h4>
+                    <p>Subestima LDL-C cuando TG es alto (&gt;200 mg/dL) o muy bajo (&lt;100 mg/dL)</p>
+                </div>
+            </div>
+
+            <div id="ldl-sampson-info" class="formula-info">
+                <div class="formula-display">
+                    <h3>Fórmula de Sampson:</h3>
+                    <div class="formula-equation">C<sub>LDL-C</sub> = C<sub>TC</sub>/0.948 - C<sub>HDL-C</sub>/0.971 - [C<sub>TG</sub>/8.56 + (C<sub>TG</sub> × C<sub>NO HDL-C</sub>)/2140 - C<sub>TG</sub>²/16100] - 9.44</div>
+                </div>
+                <div class="variables-info">
+                    <h4>Significado de las variables y constantes:</h4>
+                    <ul>
+                        <li><strong>0.948</strong>: Factor de corrección para colesterol total</li>
+                        <li><strong>0.971</strong>: Factor de corrección para HDL colesterol</li>
+                        <li><strong>8.56</strong>: Factor de conversión para triglicéridos</li>
+                        <li><strong>2140</strong>: Constante de interacción TG-NO HDL</li>
+                        <li><strong>16100</strong>: Factor de corrección cuadrática de triglicéridos</li>
+                        <li><strong>9.44</strong>: Constante de ajuste final</li>
+                    </ul>
+                </div>
+                <div class="limit-detection">
+                    <h4>LÍMITE DE DETECCIÓN:</h4>
+                    <p>TG muy altos (hasta 200 mg/dL) y en no ayuno</p>
+                </div>
+            </div>
+
+            <div id="ldl-calculator" class="calculator-form">
+                <div id="ldl-friedewald-calculator" class="formula-calculator active">
+                    <div class="input-group">
+                        <label for="ldl-ct-f">Colesterol Total (mg/dL):</label>
+                        <input type="number" id="ldl-ct-f" placeholder="Ej: 200">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="ldl-hdl-f">Colesterol HDL (mg/dL):</label>
+                        <input type="number" id="ldl-hdl-f" placeholder="Ej: 45">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="ldl-tg-f">Triglicéridos (mg/dL):</label>
+                        <input type="number" id="ldl-tg-f" placeholder="Ej: 150" onblur="checkTriglycerides('ldl-tg-f')">
+                    </div>
+                    
+                    <button class="calculate-final" onclick="calculateLDLFriedewald()">CALCULAR</button>
+                </div>
+
+                <div id="ldl-sampson-calculator" class="formula-calculator">
+                    <div class="input-group">
+                        <label for="ldl-ct-s">Colesterol Total (mg/dL):</label>
+                        <input type="number" id="ldl-ct-s" placeholder="Ej: 200">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="ldl-hdl-s">HDL Colesterol (mg/dL):</label>
+                        <input type="number" id="ldl-hdl-s" placeholder="Ej: 45">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="ldl-tg-s">Triglicéridos (mg/dL):</label>
+                        <input type="number" id="ldl-tg-s" placeholder="Ej: 150">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="ldl-nohdl-s">NO HDL Colesterol (mg/dL):</label>
+                        <input type="number" id="ldl-nohdl-s" placeholder="Se calculará automáticamente" readonly>
+                    </div>
+                    
+                    <button class="calculate-final" onclick="calculateLDLSampson()">CALCULAR</button>
+                </div>
+
+                <div class="result" id="ldl-result-display"></div>
+            </div>
+        </div>
+
+        <!-- Sección de Cálculo VLDL -->
+        <div class="calculation-section" id="vldl-calculation">
+            <h2>Calculadora de VLDL</h2>
+            
+            <div class="formula-selector">
+                <div class="formula-buttons">
+                    <button class="formula-btn active" onclick="selectVLDLFormula('friedewald')">Fórmula de Friedewald</button>
+                    <button class="formula-btn" onclick="selectVLDLFormula('sampson')">Fórmula de Sampson</button>
+                </div>
+            </div>
+
+            <div id="vldl-friedewald-info" class="formula-info active">
+                <div class="formula-display">
+                    <h3>Fórmula de Friedewald para VLDL:</h3>
+                    <div class="formula-equation">VLDL = TG ÷ 5</div>
+                </div>
+                <div class="variables-info">
+                    <h4>¿Por qué se divide entre 5?</h4>
+                    <p>La constante 5 representa la relación promedio entre triglicéridos y colesterol en las partículas VLDL. En condiciones normales, las partículas VLDL contienen aproximadamente 5 partes de triglicéridos por cada parte de colesterol, por lo que dividir los triglicéridos entre 5 proporciona una estimación del colesterol VLDL.</p>
+                </div>
+            </div>
+
+            <div id="vldl-sampson-info" class="formula-info">
+                <div class="formula-display">
+                    <h3>Fórmula de Sampson para VLDL:</h3>
+                    <div class="formula-equation">VLDL = [C<sub>TG</sub>/8.56 + (C<sub>TG</sub> × C<sub>NO HDL-C</sub>)/2140 - C<sub>TG</sub>²/16100]</div>
+                </div>
+                <div class="variables-info">
+                    <h4>Significado de las constantes:</h4>
+                    <ul>
+                        <li><strong>8.56</strong>: Factor de conversión optimizado para triglicéridos</li>
+                        <li><strong>2140</strong>: Constante de interacción TG-NO HDL</li>
+                        <li><strong>16100</strong>: Factor de corrección cuadrática de triglicéridos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="vldl-calculator" class="calculator-form">
+                <div id="vldl-friedewald-calculator" class="formula-calculator active">
+                    <div class="input-group">
+                        <label for="vldl-tg-f">Triglicéridos (mg/dL):</label>
+                        <input type="number" id="vldl-tg-f" placeholder="Ej: 150">
+                    </div>
+                    
+                    <button class="calculate-final" onclick="calculateVLDLFriedewald()">CALCULAR</button>
+                </div>
+
+                <div id="vldl-sampson-calculator" class="formula-calculator">
+                    <div class="input-group">
+                        <label for="vldl-ct-s">Colesterol Total (mg/dL):</label>
+                        <input type="number" id="vldl-ct-s" placeholder="Ej: 200">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="vldl-hdl-s">HDL Colesterol (mg/dL):</label>
+                        <input type="number" id="vldl-hdl-s" placeholder="Ej: 45">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="vldl-tg-s">Triglicéridos (mg/dL):</label>
+                        <input type="number" id="vldl-tg-s" placeholder="Ej: 150">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="vldl-nohdl-s">NO HDL Colesterol (mg/dL):</label>
+                        <input type="number" id="vldl-nohdl-s" placeholder="Se calculará automáticamente" readonly>
+                    </div>
+                    
+                    <button class="calculate-final" onclick="calculateVLDLSampson()">CALCULAR</button>
+                </div>
+
+                <div class="result" id="vldl-result-display"></div>
+            </div>
+        </div>
+
+        <!-- Sección de Cálculo Colesterol Remanente -->
+        <div class="calculation-section" id="remanente-calculation">
+            <h2>Calculadora de Colesterol Remanente</h2>
+            
+            <div class="formula-display">
+                <h3>Fórmula del Colesterol Remanente:</h3>
+                <div class="formula-equation">Colesterol Remanente = Colesterol Total - (LDL Colesterol + HDL Colesterol)</div>
+            </div>
+            
+            <div id="remanente-calculator" class="calculator-form">
+                <div class="input-group">
+                    <label for="rem-ct">Colesterol Total (mg/dL):</label>
+                    <input type="number" id="rem-ct" placeholder="Ej: 200">
+                </div>
+                
+                <div class="input-group">
+                    <label for="rem-ldl">LDL Colesterol (mg/dL):</label>
+                    <input type="number" id="rem-ldl" placeholder="Ej: 120">
+                </div>
+                
+                <div class="input-group">
+                    <label for="rem-hdl">HDL Colesterol (mg/dL):</label>
+                    <input type="number" id="rem-hdl" placeholder="Ej: 45">
+                </div>
+                
+                <button class="calculate-final" onclick="calculateRemnantCholesterol()">CALCULAR</button>
+                
+                <div class="result" id="remanente-result-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMainTab = 'ldl';
+        let currentLDLFormula = 'friedewald';
+        let currentVLDLFormula = 'friedewald';
+
+        // Manejo de pestañas principales
+        function showMainTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelectorAll('.calculation-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            document.getElementById(tab + '-main-tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            currentMainTab = tab;
+        }
+
+        // Mostrar sección de cálculo
+        function showCalculation(type) {
+            // Ocultar todas las pestañas principales
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Mostrar solo la sección de cálculo correspondiente
+            document.querySelectorAll('.calculation-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(type + '-calculation').classList.add('active');
+        }
+
+        // Funciones para LDL
+        function selectLDLFormula(formula) {
+            document.querySelectorAll('#ldl-calculation .formula-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            document.querySelectorAll('#ldl-calculation .formula-info').forEach(info => {
+                info.classList.remove('active');
+            });
+            document.querySelectorAll('#ldl-calculation .formula-calculator').forEach(calc => {
+                calc.classList.remove('active');
+            });
+
+            document.getElementById('ldl-' + formula + '-info').classList.add('active');
+            document.getElementById('ldl-' + formula + '-calculator').classList.add('active');
+            currentLDLFormula = formula;
+        }
+
+        // Funciones para VLDL
+        function selectVLDLFormula(formula) {
+            document.querySelectorAll('#vldl-calculation .formula-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            document.querySelectorAll('#vldl-calculation .formula-info').forEach(info => {
+                info.classList.remove('active');
+            });
+            document.querySelectorAll('#vldl-calculation .formula-calculator').forEach(calc => {
+                calc.classList.remove('active');
+            });
+
+            document.getElementById('vldl-' + formula + '-info').classList.add('active');
+            document.getElementById('vldl-' + formula + '-calculator').classList.add('active');
+            currentVLDLFormula = formula;
+        }
+
+        // Verificar triglicéridos altos
+        function checkTriglycerides(inputId) {
+            const value = parseFloat(document.getElementById(inputId).value);
+            const existingWarning = document.querySelector('.warning-box');
+            
+            if (existingWarning) {
+                existingWarning.remove();
+            }
+            
+            if (value > 200) {
+                const warning = document.createElement('div');
+                warning.className = 'warning-box';
+                warning.innerHTML = `
+                    <strong>⚠️ Advertencia:</strong> Los triglicéridos están por encima de 200 mg/dL. 
+                    ¿Estás seguro que quieres continuar con este valor?
+                    <button onclick="this.parentElement.remove()" style="margin-left: 10px; padding: 5px 10px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer;">SÍ</button>
+                `;
+                document.getElementById(inputId).parentNode.appendChild(warning);
+            }
+        }
+
+        // Calcular NO HDL automáticamente
+        function calculateNOHDL(ctId, hdlId, nohdlId) {
+            const ct = parseFloat(document.getElementById(ctId).value) || 0;
+            const hdl = parseFloat(document.getElementById(hdlId).value) || 0;
+            document.getElementById(nohdlId).value = ct - hdl;
+        }
+
+        // Event listeners para calcular NO HDL automáticamente
+        document.addEventListener('input', function(e) {
+            if (e.target.id === 'ldl-ct-s' || e.target.id === 'ldl-hdl-s') {
+                calculateNOHDL('ldl-ct-s', 'ldl-hdl-s', 'ldl-nohdl-s');
+            }
+            if (e.target.id === 'vldl-ct-s' || e.target.id === 'vldl-hdl-s') {
+                calculateNOHDL('vldl-ct-s', 'vldl-hdl-s', 'vldl-nohdl-s');
+            }
+        });
+
+        // Calcular LDL - Friedewald
+        function calculateLDLFriedewald() {
+            const ct = parseFloat(document.getElementById('ldl-ct-f').value);
+            const hdl = parseFloat(document.getElementById('ldl-hdl-f').value);
+            const tg = parseFloat(document.getElementById('ldl-tg-f').value);
+
+            if (!ct || !hdl || !tg) {
+                alert('Por favor, completa todos los campos');
+                return;
+            }
+
+            const ldl = ct - hdl - (tg / 5);
+            displayLDLResult(ldl, 'Friedewald');
+        }
+
+        // Calcular LDL - Sampson
+        function calculateLDLSampson() {
+            const ct = parseFloat(document.getElementById('ldl-ct-s').value);
+            const hdl = parseFloat(document.getElementById('ldl-hdl-s').value);
+            const tg = parseFloat(document.getElementById('ldl-tg-s').value);
+            const nohdl = parseFloat(document.getElementById('ldl-nohdl-s').value);
+
+            if (!ct || !hdl || !tg) {
+                alert('Por favor, completa todos los campos');
+                return;
+            }
+
+            const ldl = (ct / 0.948) - (hdl / 0.971) - (tg / 8.56 + (tg * nohdl) / 2140 - (tg * tg) / 16100) - 9.44;
+            displayLDLResult(ldl, 'Sampson');
+        }
+
+        function displayLDLResult(value, formula) {
+            const resultDiv = document.getElementById('ldl-result-display');
+            let warning = '';
+
+            if (value < 10 || value > 50) {
+                warning = `
+                    <div class="result-warning">
+                        <span class="warning-icon">⚠️</span>
+                        <span>${value < 10 ? 'Tus valores de LDL son menores que los valores normales' : 'Tus valores de LDL superan lo normal'}</span>
+                    </div>
+                `;
+            }
+
+            resultDiv.innerHTML = `
+                <h3>Resultado LDL</h3>
+                <p><strong>Método:</strong> Fórmula de ${formula}</p>
+                <p><strong>LDL Colesterol:</strong> ${value.toFixed(2)} mg/dL</p>
+                <p><strong>Rango normal:</strong> 10 - 50 mg/dL</p>
+                ${warning}
+            `;
+            resultDiv.style.display = 'block';
+        }
+
+        // Calcular VLDL - Friedewald
+        function calculateVLDLFriedewald() {
+            const tg = parseFloat(document.getElementById('vldl-tg-f').value);
+
+            if (!tg) {
+                alert('Por favor, ingresa el valor de triglicéridos');
+                return;
+            }
+
+            const vldl = tg / 5;
+            displayVLDLResult(vldl, 'Friedewald');
+        }
+
+        // Calcular VLDL - Sampson
+        function calculateVLDLSampson() {
+            const ct = parseFloat(document.getElementById('vldl-ct-s').value);
+            const hdl = parseFloat(document.getElementById('vldl-hdl-s').value);
+            const tg = parseFloat(document.getElementById('vldl-tg-s').value);
+            const nohdl = parseFloat(document.getElementById('vldl-nohdl-s').value);
+
+            if (!ct || !hdl || !tg) {
+                alert('Por favor, completa todos los campos');
+                return;
+            }
+
+            const vldl = (tg / 8.56) + (tg * nohdl / 2140) - (tg * tg / 16100);
+            displayVLDLResult(vldl, 'Sampson');
+        }
+
+        function displayVLDLResult(value, formula) {
+            const resultDiv = document.getElementById('vldl-result-display');
+            let warning = '';
+
+            if (value < 5 || value > 14) {
+                warning = `
+                    <div class="result-warning">
+                        <span class="warning-icon">⚠️</span>
+                        <span>${value < 5 ? 'Tus valores de VLDL son menores a los valores de referencia' : 'Tus valores de VLDL superan los valores de referencia'}</span>
+                    </div>
+                `;
+            }
+
+            resultDiv.innerHTML = `
+                <h3>Resultado VLDL</h3>
+                <p><strong>Método:</strong> Fórmula de ${formula}</p>
+                <p><strong>VLDL Colesterol:</strong> ${value.toFixed(2)} mg/dL</p>
+                <p><strong>Rango normal:</strong> 5 - 14 mg/dL</p>
+                ${warning}
+            `;
+            resultDiv.style.display = 'block';
+        }
+
+        // Calcular Colesterol Remanente
+        function calculateRemnantCholesterol() {
+            const ct = parseFloat(document.getElementById('rem-ct').value);
+            const ldl = parseFloat(document.getElementById('rem-ldl').value);
+            const hdl = parseFloat(document.getElementById('rem-hdl').value);
+
+            if (!ct || !ldl || !hdl) {
+                alert('Por favor, completa todos los campos');
+                return;
+            }
+
+            const remnant = ct - (ldl + hdl);
+            displayRemnantResult(remnant);
+        }
+
+        function displayRemnantResult(value) {
+            const resultDiv = document.getElementById('remanente-result-display');
+            let interpretation = '';
+            let warning = '';
+
+            if (value < 30) {
+                interpretation = 'Normal';
+            } else if (value >= 30 && value <= 50) {
+                interpretation = 'Límite/Intermedio';
+                warning = `
+                    <div class="result-warning">
+                        <span class="warning-icon">⚠️</span>
+                        <span>Valores en rango límite/intermedio</span>
+                    </div>
+                `;
+            } else {
+                interpretation = 'Elevado - Mayor riesgo cardiovascular';
+                warning = `
+                    <div class="result-warning">
+                        <span class="warning-icon">⚠️</span>
+                        <span>Valores elevados - Asociado a mayor riesgo cardiovascular</span>
+                    </div>
+                `;
+            }
+
+            resultDiv.innerHTML = `
+                <h3>Resultado Colesterol Remanente</h3>
+                <p><strong>Valor:</strong> ${value.toFixed(2)} mg/dL</p>
+                <p><strong>Interpretación:</strong> ${interpretation}</p>
+                <p><strong>Rangos de referencia:</strong></p>
+                <ul style="text-align: left; margin-top: 10px;">
+                    <li>&lt; 30 mg/dL: Normal</li>
+                    <li>30 - 50 mg/dL: Límite/Intermedio</li>
+                    <li>&gt; 50 mg/dL: Elevado</li>
+                </ul>
+                ${warning}
+            `;
+            resultDiv.style.display = 'block';
+        }
+
+        // Manejo de imagen del logo
+        document.getElementById('logoInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const logoContainer = document.querySelector('.logo-container');
+                    logoContainer.innerHTML = `<img src="${e.target.result}" alt="Logo Instituto">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+    <div class="container">
+        ...
+        <div class="calculation-section" id="remanente-calculation">
+            <h2>Calculadora de Colesterol Remanente</h2>
+            ...
+                <div class="result" id="remanente-result-display"></div>
+            </div>
+        </div>
+
+        <!-- Footer: autor del sitio -->
+        <footer class="footer" role="contentinfo" aria-label="Autor del sitio">
+            <p>Creado por: <a href="#" title="Yessi Aneyda Choque Huanca">@Yessi Aneyda Choque Huanca</a></p>
+            <small>INTERNA DE LA CARRERA DE BIOQUÍMICA UMSA</small>
+        </footer>
+    </div>
+
+    </body>
+</html>
